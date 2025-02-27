@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="XpathViewer.Views.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:local="clr-namespace:XpathViewer.Views"
+             xmlns:controls="clr-namespace:XpathViewer.Controls"
+             xmlns:converters="clr-namespace:XpathViewer.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <converters:NullOrEmptyConverter x:Key="NullOrEmptyConverter" />
+    </UserControl.Resources>
+    
+    <Grid Margin="15" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBox Text="{Binding XpathString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="18" TextWrapping="Wrap" />
+
+        <TextBlock Text="{Binding ErrorString}" Grid.Row="1" Grid.ColumnSpan="2" Foreground="Red" Margin="0 5 0 0" TextWrapping="Wrap"/>
+
+        <controls:TextEditor x:Name="txteditor_xmlData" Grid.Row="2" Grid.Column="0" Margin="0 0 15 0" BorderBrush="Black" BorderThickness="1" TextBinding="{Binding XmlData}" SyntaxHighlighting="XML" FontFamily="Consolas" FontSize="10pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ShowLineNumbers="True" />
+        <Grid Grid.Row="2" Grid.Column="0" Panel.ZIndex="1" Margin="0 0 40 10" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Button Content="Indent" Grid.Row="0" Height="20" Width="50" Command="{Binding IndentCommand}" Margin="0 0 0 5" HorizontalAlignment="Right"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="1" Margin="15 0 0 0" Background="White" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Type an expression to evaluate for the selected items" Grid.Row="0" Margin="5 0 0 0"  VerticalAlignment="Center" Foreground="Gray" FontSize="10pt" >
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ExpressionString, Converter={StaticResource NullOrEmptyConverter}}" Value="False">
+                                <Setter Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBox x:Name="txtbox_expression" Text="{Binding ExpressionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" BorderBrush="Black" BorderThickness="1 1 1 1" VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="14" TextWrapping="Wrap" />
+            <controls:TextEditor x:Name="txteditor_output" Grid.Row="1" BorderBrush="Black" BorderThickness="1 0 1 1" TextBinding="{Binding Output}" FontFamily="Consolas" FontSize="10pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ShowLineNumbers="True" IsReadOnly="True" WordWrap="True"/>
+        </Grid>
+
+    </Grid>
+</UserControl>
