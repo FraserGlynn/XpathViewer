@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Xml;
 using System.Xml.XPath;
@@ -90,24 +91,27 @@ namespace XpathViewer
             int depth = 0;
             int currentIndex = startIndex;
 
+            Regex openingTagRegex = new Regex($"<{nodeName}(?:\\s+[^<>]*)?>");
+            Regex closingTagRegex = new Regex($"</{nodeName}\\s*>");
+
             while (currentIndex < xml.Length)
             {
-                int openingTagIndex = xml.IndexOf($"<{nodeName}", currentIndex);
-                int closingTagIndex = xml.IndexOf($"</{nodeName}", currentIndex);
+                Match openingTag = openingTagRegex.Match(xml, currentIndex);
+                Match closingTag = closingTagRegex.Match(xml, currentIndex);
 
-                if (openingTagIndex != -1 && openingTagIndex < closingTagIndex)
+                if (openingTag.Success && openingTag.Index < closingTag.Index)
                 {
                     depth++;
-                    currentIndex = openingTagIndex + 1;
+                    currentIndex = openingTag.Index + 1;
                 }
                 else
                 {
                     depth--;
 
                     if (depth <= 0)
-                        return xml.IndexOf(">", closingTagIndex) + 1 - startIndex;
+                        return xml.IndexOf(">", closingTag.Index) + 1 - startIndex;
 
-                    currentIndex = closingTagIndex + 1;
+                    currentIndex = closingTag.Index + 1;
                 }
             }
 
