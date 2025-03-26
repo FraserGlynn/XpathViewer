@@ -37,7 +37,7 @@ namespace XpathViewer
         {
             if (navigator is IXmlLineInfo lineInfo && lineInfo.HasLineInfo())
             {
-                int startOffset = _textEditor.Document.GetOffset(lineInfo.LineNumber, lineInfo.LinePosition) - 1;
+                int startOffset = lineInfo.LineNumber == 0 && lineInfo.LinePosition == 0 ? 0 : _textEditor.Document.GetOffset(lineInfo.LineNumber, lineInfo.LinePosition) - 1;
                 int length = navigator.OuterXml.Length + 1;
 
                 // If navigator is an Element and the inner XML contains <> (ie, contains child nodes), calculate the end based on the closing xml tag
